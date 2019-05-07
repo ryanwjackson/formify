@@ -1,0 +1,103 @@
+# frozen_string_literal: true
+
+module Formify
+  module Form
+    extend ActiveSupport::Concern
+
+    included do
+      include ActiveModel::Model
+      include ActiveModel::Validations
+      include ActiveModel::Validations::Callbacks
+
+      def t(*args, **keywords)
+        I18n.t(*args, **keywords)
+      end
+
+      def validate_or_fail(*instances)
+        unless valid?
+          return Resonad.Failure(
+            Forms::Errors::ValidationError.new(form: self)
+          )
+        end
+
+        if instances.present?
+          instances.each do |instance|
+            next if instance.valid?
+
+            return Resonad.Failure(
+              Forms::Errors::ValidationError.new(form: self, message: instance.full_messages.first)
+            )
+          end
+        end
+
+        Resonad.Success
+      end
+
+      def return_self
+        Resonad.Success(self)
+      end
+
+      def translation_data
+        {}
+      end
+
+      def translation_success
+        split_name = self.class.name.split('::')
+        split_name.shift
+        action = split_name.pop.underscore
+        key = split_name.map(&:underscore).push(action).push(:success).join('.')
+        return t(key) if I18n.exists?(key, translation_data)
+      end
+
+      def with_advisory_lock(*keys, **args)
+        key = keys.map do |k|
+          if k.is_a?(String)
+            k
+          else
+            k.try(:id)
+          end
+        end.join('/')
+        ActiveRecord::Base.with_advisory_lock(key, **args) { yield }
+      end
+
+      def with_advisory_lock_transaction(*keys)
+        with_advisory_lock_transaction_result = Resonad.Failure
+
+        with_advisory_lock(*keys, transaction: true) do
+          ActiveRecord::Base.transaction do
+            with_advisory_lock_transaction_result = begin
+              yield
+            end
+
+            raise ActiveRecord::Rollback if with_advisory_lock_transaction_result.failure?
+          end
+        end
+
+        with_advisory_lock_transaction_result
+      end
+
+      def params
+        self.class.params
+      end
+    end
+
+    class_methods do
+      def attr_accessor(*attrs)
+        @class_params ||= []
+        @class_params.concat(attrs)
+        super(*attrs)
+      end
+
+      def delegate_accessor(*args, **keywords)
+        delegate(
+          *args.map { |arg| [arg, "#{arg}="] }.flatten,
+          **keywords
+        )
+      end
+
+      def params
+        @params ||= @class_params.reject { |e| %i[validation_context].include?(e) }
+      end
+    end
+  end
+end

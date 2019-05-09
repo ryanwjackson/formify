@@ -9,7 +9,7 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def generate_form_spec
-    # template "form_spec.rb", File.join("spec/lib/forms", class_path, "#{file_name}_spec.rb")
+    template "form_spec.rb", File.join("spec/lib/forms", class_path, "#{file_name}_spec.rb")
   end
 
   private

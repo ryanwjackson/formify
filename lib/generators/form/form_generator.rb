@@ -1,15 +1,15 @@
 require 'rails/generators/named_base'
 
 class FormGenerator < Rails::Generators::NamedBase
-  source_root File.expand_path('../templates', __FILE__)
+  source_root File.expand_path('templates', __dir__)
   # check_class_collision
 
   def generate_form
-    template "form.rb", File.join("app/lib/forms", class_path, "#{file_name}.rb")
+    template 'form.rb', File.join('app/lib/forms', class_path, "#{file_name}.rb")
   end
 
   def generate_form_spec
-    template "form_spec.rb", File.join("spec/lib/forms", class_path, "#{file_name}_spec.rb")
+    template 'form_spec.rb', File.join('spec/lib/forms', class_path, "#{file_name}_spec.rb")
   end
 
   private

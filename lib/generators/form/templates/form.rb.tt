@@ -1,0 +1,9 @@
+<% module_namespacing do -%>
+class <%= name.split('/').last %>
+  include Formify::Form
+
+  def save
+    raise NotImplementedError
+  end
+end
+<% end -%>

@@ -1,0 +1,12 @@
+require 'rails_helper'
+require 'formify/spec_helpers'
+
+describe Forms::<%= class_name %> do
+  include Formify::SpecHelpers
+
+  let(:attributes) do
+    {
+
+    }
+  end
+end

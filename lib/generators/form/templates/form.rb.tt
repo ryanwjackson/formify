@@ -4,12 +4,24 @@
 class <%= name.split('/').last.to_s.camelcase %>
   include Formify::Form
 
-  def initialize(attributes = {})
-    raise NotImplementedError
+  # attr_accessor :foo
 
-    self.fixed_attr = attributes[:fixed_attr]
-    super(attributes)
-  end
+  # delegate_accessor :bar
+  #                   :baz,
+  #                   to: :fixed_attr
+
+  # validates_presence_of :foo
+  #                       :bar,
+  #                       :baz
+
+  # validate :validate_
+
+  # def initialize(attributes = {})
+  #   raise NotImplementedError
+  #
+  #   self.fixed_attr = attributes[:fixed_attr]
+  #   super(attributes)
+  # end
 
   def save
     raise NotImplementedError

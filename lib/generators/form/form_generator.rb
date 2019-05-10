@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails/generators/named_base'
 
 class FormGenerator < Rails::Generators::NamedBase
@@ -16,7 +18,7 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def module_namespacing(&block)
     content = capture(&block)
-    modules.each do |mod|
+    modules.reverse.each do |mod|
       content = wrap_with_module(content, mod)
     end
     concat(content)

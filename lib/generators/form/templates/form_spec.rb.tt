@@ -11,4 +11,7 @@ describe Forms::<%= class_name %>, type: :form do
 
     }
   end
+
+  it { expect(result).to be_success }
+  it { expect(value).to be_a(KLASS) }
 end

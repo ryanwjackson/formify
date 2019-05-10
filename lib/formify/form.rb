@@ -62,13 +62,17 @@ module Formify
       end
 
       def with_advisory_lock(*keys, **args)
-        key = keys.map do |k|
-          if k.is_a?(String)
-            k
-          else
-            k.try(:id)
-          end
-        end.join('/')
+        key = if keys.present?
+                keys.map do |k|
+                  if k.is_a?(String)
+                    k
+                  else
+                    k.try(:id)
+                  end
+                end.join('/')
+              else
+                self.class.name.underscore
+              end
         ActiveRecord::Base.with_advisory_lock(key, **args) { yield }
       end
 

@@ -4,8 +4,21 @@
 class <%= name.split('/').last.to_s.camelcase %>
   include Formify::Form
 
+  def initialize(attributes = {})
+    raise NotImplementedError
+
+    self.fixed_attr = attributes[:fixed_attr]
+    super(attributes)
+  end
+
   def save
     raise NotImplementedError
+
+    with_advisory_lock_transaction(:foo) do
+      validate_or_fail
+        .and_then { method }
+        .and_then { success(object) }
+    end
   end
 end
 <% end -%>

@@ -9,8 +9,36 @@ module Formify
       include ActiveModel::Validations
       include ActiveModel::Validations::Callbacks
 
+      def failure(*args)
+        Resonad.Failure(*args)
+      end
+
+      def params
+        self.class.params
+      end
+
+      def return_self
+        Resonad.Success(self)
+      end
+
+      def success(*args)
+        Resonad.Success(*args)
+      end
+
+      def translation_data
+        {}
+      end
+
       def t(*args, **keywords)
         I18n.t(*args, **keywords)
+      end
+
+      def translation_success
+        split_name = self.class.name.split('::')
+        split_name.shift
+        action = split_name.pop.underscore
+        key = split_name.map(&:underscore).push(action).push(:success).join('.')
+        return t(key) if I18n.exists?(key, translation_data)
       end
 
       def validate_or_fail(*instances)
@@ -31,22 +59,6 @@ module Formify
         end
 
         Resonad.Success
-      end
-
-      def return_self
-        Resonad.Success(self)
-      end
-
-      def translation_data
-        {}
-      end
-
-      def translation_success
-        split_name = self.class.name.split('::')
-        split_name.shift
-        action = split_name.pop.underscore
-        key = split_name.map(&:underscore).push(action).push(:success).join('.')
-        return t(key) if I18n.exists?(key, translation_data)
       end
 
       def with_advisory_lock(*keys, **args)
@@ -74,10 +86,6 @@ module Formify
         end
 
         with_advisory_lock_transaction_result
-      end
-
-      def params
-        self.class.params
       end
     end
 

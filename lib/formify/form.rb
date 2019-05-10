@@ -44,7 +44,7 @@ module Formify
       def validate_or_fail(*instances)
         unless valid?
           return Resonad.Failure(
-            Forms::Errors::ValidationError.new(form: self)
+            Formify::Errors::ValidationError.new(form: self)
           )
         end
 
@@ -53,7 +53,7 @@ module Formify
             next if instance.valid?
 
             return Resonad.Failure(
-              Forms::Errors::ValidationError.new(form: self, message: instance.full_messages.first)
+              Formify::Errors::ValidationError.new(form: self, message: instance.full_messages.first)
             )
           end
         end

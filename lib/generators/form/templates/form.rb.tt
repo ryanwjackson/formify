@@ -1,5 +1,5 @@
 <% module_namespacing do -%>
-class <%= name.split('/').last %>
+class <%= name.split('/').last.to_s.camelcase %>
   include Formify::Form
 
   def save

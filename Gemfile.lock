@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    formify (0.11.0)
+    formify (0.11.1)
       resonad
 
 GEM

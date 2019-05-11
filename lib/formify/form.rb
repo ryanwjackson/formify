@@ -43,7 +43,7 @@ module Formify
 
       def self.t_error_key(attribute, *keys)
         [
-          self.class.translation_attributes_errors_key_base,
+          translation_attributes_errors_key_base,
           attribute,
           *keys
         ].map(&:to_s).join('.')

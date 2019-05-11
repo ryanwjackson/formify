@@ -38,10 +38,10 @@ module Formify
       end
 
       def t_error(*args)
-        I18n.t(t_error_key(*args))
+        I18n.t(self.class.t_error_key(*args))
       end
 
-      def t_error_key(attribute, *keys)
+      def self.t_error_key(attribute, *keys)
         [
           self.class.translation_attributes_errors_key_base,
           attribute,

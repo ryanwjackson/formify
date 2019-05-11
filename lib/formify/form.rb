@@ -29,8 +29,24 @@ module Formify
         {}
       end
 
+      def self.translation_attributes_errors_key_base
+        "activemodel.errors.models.#{name.underscore}.attributes"
+      end
+
       def t(*args, **keywords)
         I18n.t(*args, **keywords)
+      end
+
+      def t_error(*args)
+        I18n.t(t_error_key(*args))
+      end
+
+      def t_error_key(attribute, *keys)
+        [
+          self.class.translation_attributes_errors_key_base,
+          attribute,
+          *keys
+        ].map(&:to_s).join('.')
       end
 
       def translation_success

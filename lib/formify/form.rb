@@ -4,13 +4,28 @@ module Formify
   module Form
     extend ActiveSupport::Concern
 
+    module ClassMethods
+      def initialize_with(*args, &block)
+        define_method(:initialize) do |attributes = {}|
+          args.each do |arg|
+            instance_variable_set("@#{arg}", attributes[arg])
+          end
+
+          instance_eval(&block) if block_given?
+        end
+      end
+    end
+
+    def self.included(base)
+      base.extend ClassMethods
+    end
+
     included do
       include ActiveModel::Model
       define_model_callbacks :save
 
       include ActiveModel::Validations
       include ActiveModel::Validations::Callbacks
-
 
       def failure(*args)
         Resonad.Failure(*args)

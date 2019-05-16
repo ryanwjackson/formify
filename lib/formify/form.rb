@@ -18,16 +18,13 @@ module Formify
       end
     end
 
-    def self.included(base)
-      base.extend ClassMethods
-    end
-
     included do
       include ActiveModel::Model
       define_model_callbacks :save
 
       include ActiveModel::Validations
       include ActiveModel::Validations::Callbacks
+      extend ClassMethods
 
       def failure(*args)
         Resonad.Failure(*args)

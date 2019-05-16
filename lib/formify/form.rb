@@ -11,7 +11,9 @@ module Formify
             instance_variable_set("@#{arg}", attributes[arg])
           end
 
-          instance_eval(&block) if block_given?
+          instance_exec(attributes, &block) if block_given?
+
+          super(attributes)
         end
       end
     end

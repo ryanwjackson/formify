@@ -4,7 +4,7 @@
 class <%= name.split('/').last.to_s.camelcase %>
   include Formify::Form
 
-  # attr_accessor :foo
+  # attr_accessor :fixed_attr
 
   # delegate_accessor :bar
   #                   :baz,
@@ -16,11 +16,8 @@ class <%= name.split('/').last.to_s.camelcase %>
 
   # validate :validate_
 
-  # def initialize(attributes = {})
-  #   raise NotImplementedError
-  #
-  #   self.fixed_attr = attributes[:fixed_attr]
-  #   super(attributes)
+  # initialize_with :fixed_attr do |attributes|
+  #   puts attributes
   # end
 
   def save

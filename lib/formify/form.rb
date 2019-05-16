@@ -6,8 +6,11 @@ module Formify
 
     included do
       include ActiveModel::Model
+      define_model_callbacks :save
+
       include ActiveModel::Validations
       include ActiveModel::Validations::Callbacks
+
 
       def failure(*args)
         Resonad.Failure(*args)

@@ -22,7 +22,7 @@ describe Forms::<%= class_name %>, type: :form do
   it { expect(value).to be_a(<%= inferred_model_name %>) } # Model name inferred
 
 <% all_attributes.each do |attr| -%>
-  context '#<%= attr %>' do
+  describe '#<%= attr %>' do
     it { expect_error_with_missing_attribute(:<%= attr %>) }
     xit { expect_error_with_attribute_value(:<%= attr %>, <%= attr.upcase %>_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:<%= attr %>, <%= attr.upcase %>_GOOD_VALUE) }

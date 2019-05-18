@@ -5,7 +5,7 @@ class <%= form_name %>
   include Formify::Form
 
   attr_accessor :<%= attributes_with_delegates.first %><%= ',' if attributes_with_delegates.count > 1 %>
-<% attributes[1..-1].each_with_index do |attr, i| -%>
+<% attributes_with_delegates[1..-1].each_with_index do |attr, i| -%>
                 :<%= attr %><%= ',' unless attributes_with_delegates.count - 2 == i %>
 <% end -%>
 

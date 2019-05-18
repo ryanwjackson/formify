@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    formify (0.17.1)
+    formify (0.17.2)
       rails
       resonad
       with_advisory_lock

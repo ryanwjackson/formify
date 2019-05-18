@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 <% module_namespacing do -%>
-class <%= name.split('/').last.to_s.camelcase %>
+class <%= form_name %>
   include Formify::Form
 
   attr_accessor :<%= attributes.first %><%= ',' if attributes.count > 1 %>

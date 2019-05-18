@@ -11,6 +11,20 @@ class FormGenerator < Rails::Generators::NamedBase
             required: true,
             description: 'A list of attributes and their delegates: foo:bar,baz'
 
+  class_option  :pluralize_collection,
+                default: true,
+                description: 'Disable naming convention transformations like forcing plural collections',
+                type: :boolean
+
+  def transform_naming
+    return unless pluralize_collection?
+
+    self.name = begin
+      names = name.split('/')
+      names[0..-3].append(names[-2].pluralize).append(names[-1]).join('/')
+    end
+  end
+
   def validate_fixed_attrs
     return unless duplicate_attributes.any?
 
@@ -18,11 +32,11 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def generate_form
-    template 'form.rb', File.join('app/lib/forms', class_path, "#{file_name}.rb")
+    template 'form.rb', File.join('app/lib/forms', transformed_class_path, "#{file_name}.rb")
   end
 
   def generate_form_spec
-    template 'form_spec.rb', File.join('spec/lib/forms', class_path, "#{file_name}_spec.rb")
+    template 'form_spec.rb', File.join('spec/lib/forms', transformed_class_path, "#{file_name}_spec.rb")
   end
 
   private
@@ -47,6 +61,14 @@ class FormGenerator < Rails::Generators::NamedBase
     ]
   end
 
+  def collection
+    @collection ||= split_name[-2].pluralize.underscore
+  end
+
+  def collection_name
+    @collection_name ||= collection.camelcase
+  end
+
   def delegated_attributes
     @delegated_attributes ||= attributes_and_delegates
       .select { |_k, v| v.sort!.present? }
@@ -59,8 +81,16 @@ class FormGenerator < Rails::Generators::NamedBase
                               .map(&:first)
   end
 
+  def form
+    @form ||= name.split('/').last.to_s.underscore
+  end
+
+  def form_name
+    @form_name ||= form.camelcase
+  end
+
   def inferred_model_name
-    @inferred_model_name ||= name.split('/')[-2].singularize.camelcase
+    @inferred_model_name ||= collection.singularize.camelcase
   end
 
   def module_namespacing(&block)
@@ -72,7 +102,33 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def modules
-    @modules ||= ['Forms'] + name.split('/')[0..-2].map(&:to_s).map(&:camelcase)
+    @modules ||= ['Forms'] + split_name[0..-2].map(&:to_s).map(&:camelcase)
+  end
+
+  def pluralize_collection?
+    @pluralize_collection ||= options[:pluralize_collection]
+  end
+
+  def scopes
+    @scopes ||= split_name[0..-3].map(&:underscore)
+  end
+
+  def scope_names
+    @scope_names ||= scopes.map(&:camelcase)
+  end
+
+  def split_name
+    @split_name ||= name.split('/')
+  end
+
+  def transformed_class_path
+    @transformed_class_path ||= begin
+      if pluralize_collection?
+        class_path[0..-2].append(class_path[-1].pluralize)
+      else
+        class_path
+      end
+    end
   end
 
   def variablefy(val)

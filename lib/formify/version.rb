@@ -1,3 +1,3 @@
 module Formify
-  VERSION = '0.17.2'.freeze
+  VERSION = '0.17.3'.freeze
 end

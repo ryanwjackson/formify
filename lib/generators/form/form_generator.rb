@@ -49,8 +49,11 @@ class FormGenerator < Rails::Generators::NamedBase
                         .sort
   end
 
-  def attributes
-    @attributes ||= attributes_and_delegates.keys.sort
+  def attributes_with_delegates
+    @attributes_with_delegates ||= attributes_and_delegates
+      .select { |k, v) v.present? }
+      .keys
+      .sort
   end
 
   def attributes_and_delegates
@@ -111,6 +114,16 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def pluralize_collection?
     @pluralize_collection ||= options[:pluralize_collection]
+  end
+
+  def return_attribute
+    @return_attribute ||= begin
+      if all_attributes.include?(collection.singularize)
+        collection.singularize
+      else
+        form_attributes.split(':').first
+      end
+    end
   end
 
   def scopes

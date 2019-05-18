@@ -17,7 +17,7 @@ class <%= form_name %>
                     to: :<%= to_attr %>
 <% end -%>
 
-  before_validation :before_validation_do_something
+  # before_validation :before_validation_do_something
 
   validates_presence_of :<%= all_attributes.first %><%= ',' if all_attributes.count > 1 %>
 <% all_attributes[1..-1].each_with_index do |attr, i| -%>

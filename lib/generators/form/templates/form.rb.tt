@@ -28,7 +28,7 @@ class <%= form_name %>
 
   initialize_with :<%= attributes_with_delegates.join(', :') %> do |attributes|
 <% if create? -%>
-    @<% collection.singularize %> ||= <% inferred_model_name %>.new
+    @<%= collection.singularize %> ||= <%= inferred_model_name %>.new
 
 <% end -%>
     puts attributes

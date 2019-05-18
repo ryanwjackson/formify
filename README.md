@@ -122,42 +122,36 @@ describe Forms::Widgets::Create, type: :form do
   it { expect(value).to be_a(Widget) } # Model name inferred
 
   context '#bar' do
-    # Attribute: :bar
     it { expect_error_with_missing_attribute(:bar) }
     xit { expect_error_with_attribute_value(:bar, BAR_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:bar, BAR_GOOD_VALUE) }
   end
 
   context '#baz' do
-    # Attribute: :baz
     it { expect_error_with_missing_attribute(:baz) }
     xit { expect_error_with_attribute_value(:baz, BAZ_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:baz, BAZ_GOOD_VALUE) }
   end
 
   context '#created_by' do
-    # Attribute: :created_by
     it { expect_error_with_missing_attribute(:created_by) }
     xit { expect_error_with_attribute_value(:created_by, CREATED_BY_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:created_by, CREATED_BY_GOOD_VALUE) }
   end
 
   context '#foo' do
-    # Attribute: :foo
     it { expect_error_with_missing_attribute(:foo) }
     xit { expect_error_with_attribute_value(:foo, FOO_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:foo, FOO_GOOD_VALUE) }
   end
 
   context '#owner' do
-    # Attribute: :owner
     it { expect_error_with_missing_attribute(:owner) }
     xit { expect_error_with_attribute_value(:owner, OWNER_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:owner, OWNER_GOOD_VALUE) }
   end
 
   context '#owner_attribute' do
-    # Attribute: :owner_attribute
     it { expect_error_with_missing_attribute(:owner_attribute) }
     xit { expect_error_with_attribute_value(:owner_attribute, OWNER_ATTRIBUTE_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:owner_attribute, OWNER_ATTRIBUTE_GOOD_VALUE) }

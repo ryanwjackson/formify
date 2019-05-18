@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    formify (0.14.1)
+    formify (0.15.0)
       rails
       resonad
 

@@ -27,9 +27,10 @@ class <%= form_name %>
   # validate :validate_something
 
   initialize_with :<%= attributes_with_delegates.join(', :') %> do |attributes|
-    <% if create? -%>
-      @<% collection.singularize -%> ||= <% inferred_model_name -%>.new
-    <% end -%>
+<% if create? -%>
+    @<% collection.singularize %> ||= <% inferred_model_name %>.new
+
+<% end -%>
     puts attributes
   end
 

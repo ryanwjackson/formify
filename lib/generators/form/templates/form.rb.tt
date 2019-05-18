@@ -14,7 +14,7 @@ class <%= name.split('/').last.to_s.camelcase %>
   #                       :bar,
   #                       :baz
 
-  # validate :validate_
+  # validate :validate_something
 
   # initialize_with :fixed_attr do |attributes|
   #   puts attributes
@@ -25,9 +25,17 @@ class <%= name.split('/').last.to_s.camelcase %>
 
     with_advisory_lock_transaction(:foo) do
       validate_or_fail
-        .and_then { method }
-        .and_then { success(object) }
+        .and_then { form_method }
+        .and_then { success(fixed_attr) }
     end
   end
+
+  private
+
+  # def form_method
+  # end
+
+  # def validate_something
+  # end
 end
 <% end -%>

@@ -29,7 +29,7 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def all_attributes
     @all_attributes ||= form_attributes
-                        .map { |e| e.split(/:|,/) }
+                        .map { |e| e.split(/:|,/).map(&method(:variablefy)) }
                         .flatten
                         .map(&:strip)
                         .sort
@@ -42,7 +42,7 @@ class FormGenerator < Rails::Generators::NamedBase
   def attributes_and_delegates
     @attributes_and_delegates ||= Hash[
       form_attributes
-        .map { |e| e.split(/:|,/) }
+        .map { |e| e.split(/:|,/).map(&method(:variablefy)) }
         .collect { |v| [v[0], v[1..-1]] }
     ]
   end
@@ -59,6 +59,10 @@ class FormGenerator < Rails::Generators::NamedBase
                               .map(&:first)
   end
 
+  def inferred_model_name
+    @inferred_model_name ||= name.split('/')[-2].singularize.camelcase
+  end
+
   def module_namespacing(&block)
     content = capture(&block)
     modules.reverse.each do |mod|
@@ -69,6 +73,10 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def modules
     @modules ||= ['Forms'] + name.split('/')[0..-2].map(&:to_s).map(&:camelcase)
+  end
+
+  def variablefy(val)
+    val.to_s.underscore
   end
 
   def wrap_with_module(content, mod)

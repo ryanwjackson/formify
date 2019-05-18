@@ -4,36 +4,44 @@
 class <%= name.split('/').last.to_s.camelcase %>
   include Formify::Form
 
-  # attr_accessor :fixed_attr
+  attr_accessor :<%= attributes.first %><%= ',' if attributes.count > 1 %>
+<% attributes[1..-1].each_with_index do |attr, i| -%>
+                :<%= attr %><%= ',' unless attributes.count - 2 == i %>
+<% end -%>
 
-  # delegate_accessor :bar
-  #                   :baz,
-  #                   to: :fixed_attr
+<% delegated_attributes.each do |to_attr, delegates| -%>
+  delegate_accessor :<%= delegates.first %>,
+<% delegates[1..-1].each_with_index do |attr, i| -%>
+                    :<%= attr %>,
+<% end -%>
+                    to: :<%= to_attr %>
+<% end -%>
 
-  # validates_presence_of :foo
-  #                       :bar,
-  #                       :baz
+  validates_presence_of :<%= all_attributes.first %><%= ',' if all_attributes.count > 1 %>
+<% all_attributes[1..-1].each_with_index do |attr, i| -%>
+                        :<%= attr %><%= ',' unless all_attributes.count - 2 == i %>
+<% end -%>
 
   # validate :validate_something
 
-  # initialize_with :fixed_attr do |attributes|
-  #   puts attributes
-  # end
+  initialize_with :<%= attributes.join(', :') %> do |attributes|
+    puts attributes
+  end
 
   def save
     raise NotImplementedError
 
     with_advisory_lock_transaction(:foo) do
       validate_or_fail
-        .and_then { form_method }
-        .and_then { success(fixed_attr) }
+        .and_then { <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %> }
+        .and_then { success(<%= attributes.first %>) }
     end
   end
 
   private
 
-  # def form_method
-  # end
+  def <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %>
+  end
 
   # def validate_something
   # end

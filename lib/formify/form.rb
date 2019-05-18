@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/concern'
+
 module Formify
   module Form
     extend ActiveSupport::Concern

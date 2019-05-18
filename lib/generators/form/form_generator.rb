@@ -6,6 +6,17 @@ class FormGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('templates', __dir__)
   # check_class_collision
 
+  argument  :form_attributes,
+            type: :array,
+            required: true,
+            description: 'A list of attributes and their delegates: foo:bar,baz'
+
+  def validate_fixed_attrs
+    return unless duplicate_attributes.any?
+
+    raise "Cannot have duplicate attributes: #{duplicate_attributes.join(', ')}"
+  end
+
   def generate_form
     template 'form.rb', File.join('app/lib/forms', class_path, "#{file_name}.rb")
   end
@@ -15,6 +26,38 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   private
+
+  def all_attributes
+    @all_attributes ||= form_attributes
+                        .map { |e| e.split(/:|,/) }
+                        .flatten
+                        .map(&:strip)
+                        .sort
+  end
+
+  def attributes
+    @attributes ||= attributes_and_delegates.keys.sort
+  end
+
+  def attributes_and_delegates
+    @attributes_and_delegates ||= Hash[
+      form_attributes
+        .map { |e| e.split(/:|,/) }
+        .collect { |v| [v[0], v[1..-1]] }
+    ]
+  end
+
+  def delegated_attributes
+    @delegated_attributes ||= attributes_and_delegates
+      .select { |_k, v| v.sort!.present? }
+  end
+
+  def duplicate_attributes
+    @duplicate_attributes ||= all_attributes
+                              .group_by { |e| e }
+                              .select { |_k, v| v.size > 1 }
+                              .map(&:first)
+  end
 
   def module_namespacing(&block)
     content = capture(&block)

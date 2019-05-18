@@ -8,10 +8,23 @@ describe Forms::<%= class_name %>, type: :form do
 
   let(:attributes) do
     {
-
+      FORM_ATTR: ATTR_VALUE
     }
   end
 
   it { expect(result).to be_success }
   it { expect(value).to be_a(KLASS) }
+
+
+
+  it { expect_error_with_missing_attribute(:FORM_ATTR) }
+  xit { expect_error_with_attribute_value(:FORM_ATTR, BAD_VALUE) }
+  xit { expect_error_message(message) }
+  xit { expect_error_with_attribute(attribute) }
+  xit { expect_error_with_attribute_value(attribute, value, message: nil) }
+  xit { expect_error_with_missing_attribute(attribute) }
+  xit { expect_invalid(*args, **keywords) }
+  xit { expect_not_valid(attribute: nil, message: nil) }
+  xit { expect_valid }
+  xit { expect_valid_with_attribute_value(attribute, value) }
 end

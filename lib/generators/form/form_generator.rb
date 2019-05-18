@@ -69,6 +69,10 @@ class FormGenerator < Rails::Generators::NamedBase
     @collection_name ||= collection.camelcase
   end
 
+  def create?
+    form.downcase.include?('create')
+  end
+
   def delegated_attributes
     @delegated_attributes ||= attributes_and_delegates
       .select { |_k, v| v.sort!.present? }

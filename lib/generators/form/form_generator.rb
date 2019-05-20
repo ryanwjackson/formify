@@ -50,10 +50,7 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def attributes_with_delegates
-    @attributes_with_delegates ||= attributes_and_delegates
-      .select { |k, v| v.present? }
-      .keys
-      .sort
+    @attributes_with_delegates ||= attributes_and_delegates.keys.sort
   end
 
   def attributes_and_delegates

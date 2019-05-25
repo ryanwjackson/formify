@@ -95,7 +95,7 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def factory_bot?
-    @factory_bot = Class.const_defined?(FactoryBot)
+    @factory_bot = Class.const_defined?('FactoryBot')
   end
 
   def factories

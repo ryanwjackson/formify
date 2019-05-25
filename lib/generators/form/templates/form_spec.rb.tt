@@ -37,9 +37,9 @@ describe Forms::<%= class_name %>, type: :form do
     xit { expect_error_with_attribute_value(:<%= attr %>, <%= attr.upcase %>_BAD_VALUE, message: nil) } # :message is optional
     xit { expect_valid_with_attribute_value(:<%= attr %>, <%= attr.upcase %>_GOOD_VALUE) }
   end
-
 <% end -%>
 <% if spec_comments? -%>
+
   # Other Expectation Helpers
   # xit { expect_error_message(message) }
   # xit { expect_error_with_attribute(attribute) }

@@ -43,7 +43,7 @@ class <%= form_name %>
   def save
     with_advisory_lock_transaction(<%= lock_key.join(', ') %>) do
       validate_or_fail
-        .and_then { <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %> }
+        .and_then { <%= method_name %> }
         .and_then { success(<%= return_attribute %>) }
     end
   end

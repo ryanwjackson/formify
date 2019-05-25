@@ -28,9 +28,9 @@ class <%= form_name %>
 
   initialize_with :<%= attributes_with_delegates.join(', :') %> do |attributes|
 <% if create? -%>
-    self.<%= collection.singularize %> ||= <%= inferred_model_name %>.new
+    self.<%= method_attribute %> ||= <%= inferred_model_name %>.new
 <% elsif upsert? -%>
-  self.<%= first_attribute.singularize %> ||= <%= upsert_attribute %>.find_or_initialize_by(
+  self.<%= method_attribute %> ||= <%= inferred_model_name %>.find_or_initialize_by(
 <% upsert_delegates.each_with_index do |attr, i| -%>
     <%= attr %>: attributes[:<%= attr %>]<%= ',' unless upsert_delegates.count - 2 == i %>
 <% end -%>
@@ -54,7 +54,9 @@ class <%= form_name %>
 
   def <%= method_name %>
 <% if create? || upsert? || update? -%>
-    <%= collection.singularize %>.save!
+    <%= method_attribute %>.save!
+<% elsif destroy? -%>
+    <%= method_attribute %>.destroy!
 <% else -%>
     raise NotImplementedError
 

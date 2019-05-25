@@ -76,9 +76,26 @@ class FormGenerator < Rails::Generators::NamedBase
     form == 'create'
   end
 
+  def create?
+    form == 'create'
+  end
+
   def delegated_attributes
     @delegated_attributes ||= attributes_and_delegates
                               .select { |_k, v| v.sort!.present? }
+  end
+  def destroy_attribute
+    @destroy_attribute ||= begin
+      if all_attributes.include?(collection.singularize)
+        collection.singularize
+      else
+        first_attribute
+      end
+    end
+  end
+
+  def destroy?
+    form == 'destroy'
   end
 
   def duplicate_attributes
@@ -132,6 +149,16 @@ class FormGenerator < Rails::Generators::NamedBase
       [":#{collection}", update_attribute.to_s]
     else
       ['LOCK_KEY']
+    end
+  end
+
+  def method_attribute
+    @method_attribute ||= begin
+      if all_attributes.include?(collection.singularize)
+        collection.singularize
+      else
+        first_attribute
+      end
     end
   end
 
@@ -201,16 +228,6 @@ class FormGenerator < Rails::Generators::NamedBase
     end
   end
 
-  def update_attribute
-    @update_attribute ||= begin
-      if all_attributes.include?(collection.singularize)
-        collection.singularize
-      else
-        first_attribute
-      end
-    end
-  end
-
   def update?
     form == 'update'
   end
@@ -219,20 +236,10 @@ class FormGenerator < Rails::Generators::NamedBase
     form == 'upsert'
   end
 
-  def upsert_attribute
-    @upsert_attribute ||= begin
-      if all_attributes.include?(collection.singularize)
-        collection.singularize
-      else
-        first_attribute
-      end
-    end
-  end
-
   def upsert_delegates
     @upsert_delegates ||= begin
-      if delegated_attributes.key?[upsert_attribute]
-        delegated_attributes[upsert_attribute]
+      if delegated_attributes.key?[method_attribute]
+        delegated_attributes[method_attribute]
       else
         []
       end

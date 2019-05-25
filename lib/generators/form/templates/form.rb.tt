@@ -41,8 +41,6 @@ class <%= form_name %>
   end
 
   def save
-    raise NotImplementedError
-
     with_advisory_lock_transaction(<%= lock_key.join(', ') %>) do
       validate_or_fail
         .and_then { <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %> }

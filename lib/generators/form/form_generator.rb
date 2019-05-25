@@ -47,9 +47,7 @@ class FormGenerator < Rails::Generators::NamedBase
   private
 
   def all_attributes
-    @all_attributes ||= form_attributes
-                        .map { |e| e.split(/:|,/).map(&method(:variablefy)) }
-                        .flatten
+    @all_attributes ||= flattened_form_attributes
                         .map(&:strip)
                         .sort
   end
@@ -61,8 +59,8 @@ class FormGenerator < Rails::Generators::NamedBase
   def attributes_and_delegates
     @attributes_and_delegates ||= Hash[
       form_attributes
-        .map { |e| e.split(/:|,/).map(&method(:variablefy)) }
-        .collect { |v| [v[0], v[1..-1]] }
+                                  .map { |e| e.split(/:|,/).map(&method(:variablefy)) }
+                                  .collect { |v| [v[0], v[1..-1]] }
     ]
   end
 
@@ -75,12 +73,12 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def create?
-    form.downcase.include?('create')
+    form == 'create'
   end
 
   def delegated_attributes
     @delegated_attributes ||= attributes_and_delegates
-      .select { |_k, v| v.sort!.present? }
+                              .select { |_k, v| v.sort!.present? }
   end
 
   def duplicate_attributes
@@ -102,8 +100,19 @@ class FormGenerator < Rails::Generators::NamedBase
     @factories ||= FactoryBot.factories.map(&:name)
   end
 
+  def first_attribute
+    @first_attribute ||= flattened_form_attributes.first
+  end
+
+  def flattened_form_attributes
+    @flattened_form_attributes ||= form_attributes
+                                   .map { |e| e.split(/:|,/) }
+                                   .flatten
+                                   .map(&method(:variablefy))
+  end
+
   def form
-    @form ||= name.split('/').last.to_s.underscore
+    @form ||= variablefy(name.split('/').last)
   end
 
   def form_name
@@ -112,6 +121,32 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def inferred_model_name
     @inferred_model_name ||= collection.singularize.camelcase
+  end
+
+  def lock_key
+    if create?
+      [":#{collection}", ':create']
+    elsif update?
+      [":#{collection}", update_attribute.to_s]
+    elsif upsert?
+      [":#{collection}", update_attribute.to_s]
+    else
+      ['LOCK_KEY']
+    end
+  end
+
+  def method_name
+    if create?
+      "create_#{collection.singularize}"
+    elsif update?
+      "update_#{collection.singularize}"
+    elsif upsert?
+      "upsert_#{collection.singularize}"
+    elsif form.include?('_')
+      form
+    else
+      "#{form}_#{collection.singularize}"
+    end
   end
 
   def module_namespacing(&block)
@@ -162,6 +197,44 @@ class FormGenerator < Rails::Generators::NamedBase
         class_path[0..-2].append(class_path[-1].pluralize)
       else
         class_path
+      end
+    end
+  end
+
+  def update_attribute
+    @update_attribute ||= begin
+      if all_attributes.include?(collection.singularize)
+        collection.singularize
+      else
+        first_attribute
+      end
+    end
+  end
+
+  def update?
+    form == 'update'
+  end
+
+  def upsert?
+    form == 'upsert'
+  end
+
+  def upsert_attribute
+    @upsert_attribute ||= begin
+      if all_attributes.include?(collection.singularize)
+        collection.singularize
+      else
+        first_attribute
+      end
+    end
+  end
+
+  def upsert_delegates
+    @upsert_delegates ||= begin
+      if delegated_attributes.key?[upsert_attribute]
+        delegated_attributes[upsert_attribute]
+      else
+        []
       end
     end
   end

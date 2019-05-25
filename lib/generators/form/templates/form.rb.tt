@@ -29,15 +29,21 @@ class <%= form_name %>
   initialize_with :<%= attributes_with_delegates.join(', :') %> do |attributes|
 <% if create? -%>
     self.<%= collection.singularize %> ||= <%= inferred_model_name %>.new
-
+<% elsif upsert? -%>
+  self.<%= first_attribute.singularize %> ||= <%= upsert_attribute %>.find_or_initialize_by(
+<% upsert_delegates.each_with_index do |attr, i| -%>
+    <%= attr %>: attributes[:<%= attr %>]<%= ',' unless upsert_delegates.count - 2 == i %>
 <% end -%>
+  )
+<% else -%>
     puts attributes
+<% end -%>
   end
 
   def save
     raise NotImplementedError
 
-    with_advisory_lock_transaction(:foo) do
+    with_advisory_lock_transaction(<%= lock_key.join(', ') %>) do
       validate_or_fail
         .and_then { <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %> }
         .and_then { success(<%= return_attribute %>) }
@@ -46,9 +52,13 @@ class <%= form_name %>
 
   private
 
-  def <%= name.split('/').reverse[0..1].map(&:singularize).join('_').underscore %>
+  def <%= method_name %>
+<% if create? || upsert? || update? -%>
+    <%= collection.singularize %>.save!
+<% else -%>
     raise NotImplementedError
 
+<% end -%>
     success(<%= return_attribute %>)
   end
 

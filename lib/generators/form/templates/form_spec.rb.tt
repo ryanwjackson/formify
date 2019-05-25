@@ -8,7 +8,7 @@ describe Forms::<%= class_name %>, type: :form do
 
 <% all_attributes.each do |attr| -%>
 <% if factory_bot? && factory?(attr) -%>
-  let(:<%= attr %>) { FacotryBot.create(<%= attr %>) }
+  let(:<%= attr %>) { FactoryBot.create(<%= attr %>) }
 <% else -%>
   let(:<%= attr %>) { <%= attr.upcase %>_VALUE }
 <% end -%>

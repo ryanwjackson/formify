@@ -16,6 +16,11 @@ class FormGenerator < Rails::Generators::NamedBase
                 description: 'Disable naming convention transformations like forcing plural collections',
                 type: :boolean
 
+  class_option  :spec_comments,
+                default: true,
+                description: 'Set to false to not include any comments in generated specs.',
+                type: :boolean
+
   def transform_naming
     return unless pluralize_collection?
 
@@ -85,6 +90,18 @@ class FormGenerator < Rails::Generators::NamedBase
                               .map(&:first)
   end
 
+  def factory?(attr)
+    factories.include?(attr.to_sym)
+  end
+
+  def factory_bot?
+    @factory_bot = Class.const_defined?(FactoryBot)
+  end
+
+  def factories
+    @factories ||= FactoryBot.factories.map(&:name)
+  end
+
   def form
     @form ||= name.split('/').last.to_s.underscore
   end
@@ -129,6 +146,10 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def scope_names
     @scope_names ||= scopes.map(&:camelcase)
+  end
+
+  def spec_comments?
+    @spec_comments ||= options[:spec_comments]
   end
 
   def split_name

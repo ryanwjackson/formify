@@ -238,7 +238,7 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def upsert_delegates
     @upsert_delegates ||= begin
-      if delegated_attributes.key?[method_attribute]
+      if delegated_attributes.key?(method_attribute)
         delegated_attributes[method_attribute]
       else
         []

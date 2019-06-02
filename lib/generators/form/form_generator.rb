@@ -144,9 +144,9 @@ class FormGenerator < Rails::Generators::NamedBase
     if create?
       [":#{collection}", ':create']
     elsif update?
-      [":#{collection}", method_attributeto_s]
+      [":#{collection}", method_attribute.to_s]
     elsif upsert?
-      [":#{collection}", method_attributeto_s]
+      [":#{collection}", method_attribute.to_s]
     else
       ['LOCK_KEY']
     end

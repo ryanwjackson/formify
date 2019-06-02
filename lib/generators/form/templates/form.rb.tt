@@ -30,11 +30,11 @@ class <%= form_name %>
 <% if create? -%>
     self.<%= method_attribute %> ||= <%= inferred_model_name %>.new
 <% elsif upsert? -%>
-  self.<%= method_attribute %> ||= <%= inferred_model_name %>.find_or_initialize_by(
+    self.<%= method_attribute %> ||= <%= inferred_model_name %>.find_or_initialize_by(
 <% upsert_delegates.each_with_index do |attr, i| -%>
-    <%= attr %>: attributes[:<%= attr %>]<%= ',' unless upsert_delegates.count - 2 == i %>
+      <%= attr %>: attributes[:<%= attr %>]<%= ',' unless upsert_delegates.count - 1 == i %>
 <% end -%>
-  )
+    )
 <% else -%>
     puts attributes
 <% end -%>

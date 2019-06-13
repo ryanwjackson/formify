@@ -17,8 +17,8 @@ class FormGenerator < Rails::Generators::NamedBase
                 type: :boolean
 
   class_option  :spec_comments,
-                default: true,
-                description: 'Set to false to not include any comments in generated specs.',
+                default: false,
+                description: 'Set to true to include helpful comments in generated specs.',
                 type: :boolean
 
   def transform_naming

@@ -106,15 +106,27 @@ class FormGenerator < Rails::Generators::NamedBase
   end
 
   def factory?(attr)
+    return false unless factory_bot?
+
     factories.include?(attr.to_sym)
   end
 
   def factory_bot?
-    @factory_bot = Class.const_defined?('FactoryBot')
+    @factory_bot ||= begin
+      require 'factory-bot'
+      FactoryBot.find_definitions
+      Class.const_defined?('FactoryBot')
+    end
+  rescue LoadError
+    false
   end
 
   def factories
-    @factories ||= FactoryBot.factories.map(&:name)
+    return unless factory_bot?
+
+    @factories ||= begin
+      FactoryBot.factories.map(&:name)
+    end
   end
 
   def first_attribute

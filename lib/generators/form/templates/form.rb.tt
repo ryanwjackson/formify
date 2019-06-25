@@ -3,29 +3,31 @@
 <% module_namespacing do -%>
 class <%= form_name %>
   include Formify::Form
-
+<% if attributes_with_delegates.any? -%>
   attr_accessor :<%= attributes_with_delegates.first %><%= ',' if attributes_with_delegates.count > 1 %>
-<% attributes_with_delegates[1..-1].each_with_index do |attr, i| -%>
+<% (attributes_with_delegates[1..-1] || []).each_with_index do |attr, i| -%>
                 :<%= attr %><%= ',' unless attributes_with_delegates.count - 2 == i %>
+<% end -%>
 <% end -%>
 
 <% delegated_attributes.each do |to_attr, delegates| -%>
   delegate_accessor :<%= delegates.first %>,
-<% delegates[1..-1].each_with_index do |attr, i| -%>
+<% (delegates[1..-1] || []).each_with_index do |attr, i| -%>
                     :<%= attr %>,
 <% end -%>
                     to: :<%= to_attr %>
+
 <% end -%>
-
   # before_validation :before_validation_do_something
-
+<% if all_attributes.any? %>
   validates_presence_of :<%= all_attributes.first %><%= ',' if all_attributes.count > 1 %>
-<% all_attributes[1..-1].each_with_index do |attr, i| -%>
+<% (all_attributes[1..-1] || []).each_with_index do |attr, i| -%>
                         :<%= attr %><%= ',' unless all_attributes.count - 2 == i %>
+<% end -%>
 <% end -%>
 
   # validate :validate_something
-
+<% if all_attributes.any? %>
   initialize_with :<%= attributes_with_delegates.join(', :') %> do |attributes|
 <% if create? -%>
     self.<%= method_attribute %> ||= <%= inferred_model_name %>.new
@@ -39,12 +41,15 @@ class <%= form_name %>
     puts attributes
 <% end -%>
   end
+<% end -%>
 
   def save
     with_advisory_lock_transaction(<%= lock_key.join(', ') %>) do
       validate_or_fail
         .and_then { <%= method_name %> }
+<% unless return_attribute.nil? -%>
         .and_then { success(<%= return_attribute %>) }
+<% end -%>
     end
   end
 
@@ -59,7 +64,11 @@ class <%= form_name %>
     raise NotImplementedError
 
 <% end -%>
+<% if return_attribute.nil? -%>
+    success
+<% else -%>
     success(<%= return_attribute %>)
+<% end -%>
   end
 
   # def before_validation_do_something

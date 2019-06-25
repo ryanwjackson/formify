@@ -6,6 +6,7 @@ require 'formify/spec_helpers'
 describe Forms::<%= class_name %>, type: :form do
   include Formify::SpecHelpers
 
+<% if all_attributes.any? %>
 <% all_attributes.each do |attr| -%>
 <% if factory_bot? && factory?(attr) -%>
   let(:<%= attr %>) { FactoryBot.create(:<%= attr %>) }
@@ -14,11 +15,13 @@ describe Forms::<%= class_name %>, type: :form do
 <% end -%>
 <% end -%>
 
+<% end -%>
 <% if spec_comments? -%>
   # :attributes is used to initialize the form.
   # These values should result in a valid form.
   # You can override these in blocks or use let(:attributes_override) { { foo: bar } }
 <% end -%>
+<% if all_attributes.any? %>
   let(:attributes) do
     {
 <% all_attributes.each_with_index do |attr, i| -%>
@@ -27,11 +30,12 @@ describe Forms::<%= class_name %>, type: :form do
     }
   end
 
+<% end -%>
   it { expect_valid }<% if spec_comments? -%> # Expect the form to be valid<% end %>
   it { expect(result).to be_success }
   it { expect(value).to be_a(<%= inferred_model_name %>) }<% if spec_comments? -%> # Model name inferred<% end %>
-
 <% all_attributes.each do |attr| -%>
+
   describe '#<%= attr %>' do
     it { expect_error_with_missing_attribute(:<%= attr %>) }
     xit { expect_error_with_attribute_value(:<%= attr %>, <%= attr.upcase %>_BAD_VALUE, message: nil) } # :message is optional
@@ -40,6 +44,7 @@ describe Forms::<%= class_name %>, type: :form do
 
 <% end -%>
 <% if spec_comments? -%>
+
   # Other Expectation Helpers
   # xit { expect_error_message(message) }
   # xit { expect_error_with_attribute(attribute) }

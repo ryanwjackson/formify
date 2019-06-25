@@ -7,9 +7,10 @@ class FormGenerator < Rails::Generators::NamedBase
   # check_class_collision
 
   argument  :form_attributes,
+            default: [],
+            description: 'A list of attributes and their delegates: foo:bar,baz',
             type: :array,
-            required: true,
-            description: 'A list of attributes and their delegates: foo:bar,baz'
+            required: false
 
   class_option  :pluralize_collection,
                 default: true,
@@ -47,9 +48,11 @@ class FormGenerator < Rails::Generators::NamedBase
   private
 
   def all_attributes
-    @all_attributes ||= flattened_form_attributes
-                        .map(&:strip)
-                        .sort
+    @all_attributes ||= begin
+      ret = flattened_form_attributes
+        .map(&:strip)
+        .sort
+    end
   end
 
   def attributes_with_delegates
@@ -76,14 +79,11 @@ class FormGenerator < Rails::Generators::NamedBase
     form == 'create'
   end
 
-  def create?
-    form == 'create'
-  end
-
   def delegated_attributes
     @delegated_attributes ||= attributes_and_delegates
                               .select { |_k, v| v.sort!.present? }
   end
+
   def destroy_attribute
     @destroy_attribute ||= begin
       if all_attributes.include?(collection.singularize)
@@ -113,7 +113,7 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def factory_bot?
     @factory_bot ||= begin
-      require 'factory-bot'
+      require 'factory_bot'
       FactoryBot.find_definitions
       Class.const_defined?('FactoryBot')
     end
@@ -181,10 +181,8 @@ class FormGenerator < Rails::Generators::NamedBase
       "update_#{collection.singularize}"
     elsif upsert?
       "upsert_#{collection.singularize}"
-    elsif form.include?('_')
-      form
     else
-      "#{form}_#{collection.singularize}"
+      form
     end
   end
 
@@ -208,8 +206,8 @@ class FormGenerator < Rails::Generators::NamedBase
     @return_attribute ||= begin
       if all_attributes.include?(collection.singularize)
         collection.singularize
-      else
-        form_attributes.split(':').first
+      elsif !form_attributes.first.nil?
+        form_attributes.first.split(':').first
       end
     end
   end

@@ -1,5 +1,7 @@
 # Formify
 
+[![Build Status](https://travis-ci.org/ryanwjackson/formify.svg?branch=master)](https://travis-ci.org/ryanwjackson/formify) [![Coverage Status](https://coveralls.io/repos/github/ryanwjackson/formify/badge.svg?branch=master)](https://coveralls.io/github/ryanwjackson/formify?branch=master)
+
 Formify gives you scaffolding for quickly adding robust forms to your application.  Formify also includes rspec testing helpers, making it easy to validate forms.
 
 ## Installation

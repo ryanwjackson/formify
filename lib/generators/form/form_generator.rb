@@ -114,7 +114,7 @@ class FormGenerator < Rails::Generators::NamedBase
   def factory_bot?
     @factory_bot ||= begin
       require 'factory_bot'
-      FactoryBot.find_definitions if FactoryBot.factories.empty?
+      FactoryBot.find_definitions if FactoryBot.factories.count > 0
       Class.const_defined?('FactoryBot')
     end
   rescue LoadError

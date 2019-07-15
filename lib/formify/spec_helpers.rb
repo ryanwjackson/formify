@@ -71,6 +71,13 @@ module Formify
         initialized_form.send("#{attribute}=", value)
         expect_valid
       end
+
+      def expect_valid_with_missing_attribute(attribute)
+        raise 'No attribute' unless attributes.key?(attribute)
+
+        attributes_to_pass.delete(attribute)
+        expect_valid
+      end
     end
   end
 end

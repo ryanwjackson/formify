@@ -39,9 +39,9 @@ module Formify
         expect(error.attribute.try(:to_sym)).to eq(attribute.to_sym)
       end
 
-      def expect_error_with_attribute_value(attribute, value, message: nil)
+      def expect_error_with_attribute_value(attribute, value, error_attribute: nil, message: nil)
         initialized_form.send("#{attribute}=", value)
-        expect_error_with_attribute(attribute)
+        expect_error_with_attribute(error_attribute || attribute)
         expect_error_message(message) if message
       end
 

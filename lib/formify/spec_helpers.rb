@@ -8,7 +8,11 @@ module Formify
       let(:form) { described_class }
       let(:initialized_form) { initialize_form }
       let(:attributes_override) { {} }
-      let(:attributes_to_pass) { attributes.merge(attributes_override) }
+      let(:attributes_to_pass) do
+        ret = attributes.merge(attributes_override)
+        ret.merge(@_attributes_override || {})
+        ret
+      end
 
       let(:result) { do_result }
 

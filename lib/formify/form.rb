@@ -145,6 +145,10 @@ module Formify
       def params
         @params ||= @class_params.reject { |e| %i[validation_context].include?(e) }
       end
+
+      def t(*args, **keywords)
+        I18n.t(*args, **keywords)
+      end
     end
   end
 end

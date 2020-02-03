@@ -49,9 +49,19 @@ class FormGenerator < Rails::Generators::NamedBase
 
   def all_attributes
     @all_attributes ||= begin
-      ret = flattened_form_attributes
+      flattened_form_attributes
         .map(&:strip)
         .sort
+    end
+  end
+
+  def all_attributes_to_pass
+    @all_attributes_to_pass ||= begin
+      ret = flattened_form_attributes
+            .map(&:strip)
+            .sort
+      ret.delete(first_attribute) if create?
+      ret
     end
   end
 

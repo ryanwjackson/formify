@@ -5,6 +5,13 @@ module Formify
     extend ActiveSupport::Concern
 
     included do
+      def formify_params(root, *permitted)
+        params
+          .permit(
+            root => permitted
+          )[root]
+      end
+
       def redirect_to_with_flash(*args, **keywords)
         keywords.slice(%i[danger info success]).each do |k, v|
           flash[k] = v

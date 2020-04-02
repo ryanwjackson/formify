@@ -112,19 +112,23 @@ module Formify
       end
 
       def with_advisory_lock_transaction(*keys)
-        with_advisory_lock_transaction_result = Resonad.Failure
-
         with_advisory_lock(*keys, transaction: true) do
-          ActiveRecord::Base.transaction do
-            with_advisory_lock_transaction_result = begin
-              yield
-            end
+          with_transaction { yield }
+        end
+      end
 
-            raise ActiveRecord::Rollback if with_advisory_lock_transaction_result.failure?
+      def with_transaction
+        with_transaction_result = Resonad.Failure
+
+        ActiveRecord::Base.transaction do
+          with_transaction_result = begin
+            yield
           end
+
+          raise ActiveRecord::Rollback if with_transaction_result.failure?
         end
 
-        with_advisory_lock_transaction_result
+        with_transaction_result
       end
     end
 

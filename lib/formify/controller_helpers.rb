@@ -17,12 +17,9 @@ module Formify
       end
 
       def formify_redirect_to_with_flash(*args, **keywords)
-        keywords.slice(formify_flash_keys).each do |k, v|
-          flash[k] = v
-        end
-
+        formify_set_flashes(keywords)
         Rails.logger.info "Redirecting to: #{args.first}"
-
+        flash[:danger] = "testing here"
         redirect_to(*args, **keywords.except(formify_flash_keys))
       end
 
@@ -51,6 +48,12 @@ module Formify
           result: form.save,
           &block
         )
+      end
+
+      def formify_set_flashes(messages = {})
+        messages.slice(*formify_flash_keys).each do |k, v|
+          flash[k] = v
+        end
       end
     end
   end

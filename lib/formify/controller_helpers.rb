@@ -17,7 +17,7 @@ module Formify
       end
 
       def formify_redirect_to_with_flash(*args, **keywords)
-        keywords.slice(flash_keys).each do |k, v|
+        keywords.slice(formify_flash_keys).each do |k, v|
           flash[k] = v
         end
 

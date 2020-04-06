@@ -19,7 +19,6 @@ module Formify
       def formify_redirect_to_with_flash(*args, **keywords)
         formify_set_flashes(keywords)
         Rails.logger.info "Redirecting to: #{args.first}"
-        flash[:danger] = "testing here"
         redirect_to(*args, **keywords.except(formify_flash_keys))
       end
 

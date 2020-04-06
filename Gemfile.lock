@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    formify (0.23.10)
+    formify (0.23.11)
       rails
       resonad
       with_advisory_lock
@@ -81,7 +81,7 @@ GEM
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     json (2.2.0)
-    loofah (2.4.0)
+    loofah (2.5.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)

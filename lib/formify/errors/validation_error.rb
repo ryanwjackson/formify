@@ -4,7 +4,12 @@ module Formify
       attr_reader :attribute
 
       def initialize(form:)
-        @attribute = form.errors.first.first
+        first_error = form.errors.first
+        @attribute = if first_error.methods.include?(:attribute)
+                       first_error.attribute
+                     else
+                       first_error.first
+                     end
 
         super(
           form: form,

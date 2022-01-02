@@ -45,7 +45,7 @@ module Formify
       end
 
       def translation_data
-        {}
+        nil
       end
 
       def self.translation_attributes_errors_key_base
